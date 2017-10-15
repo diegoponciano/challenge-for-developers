@@ -1,3 +1,7 @@
+django-environ==0.4.4
+gql==0.1.0
+requests==2.18.4
+psycopg2==2.7.3.1
 pytest==3.2.2
 pytest-cov==2.5.1
 pytest-pythonpath==0.7.1
@@ -6,5 +10,3 @@ pytest-mock==1.6.3
 flake8==3.4.1
 model-mommy==1.4.0
 freezegun==0.3.9
-gql==0.1.0
-requests==2.18.4
