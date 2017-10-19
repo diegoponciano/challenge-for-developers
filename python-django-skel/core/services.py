@@ -59,8 +59,8 @@ def get_repos(user):
 def get_language(repo):
     try:
         return repo['node']['languages']['edges'][0]['node']['name']
-    except KeyError:
-        return None
+    except IndexError:
+        return ''
 
 
 class GithubClient:

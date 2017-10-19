@@ -3,7 +3,7 @@ from model_mommy import random_gen
 
 import core
 from core.models import GithubRepo
-from core.services import get_repos, GithubClient
+from core.services import get_language, get_repos, GithubClient
 
 
 def random_repos(number):
@@ -11,7 +11,7 @@ def random_repos(number):
     for _ in range(number):
         repos.append({
             'node': {
-                'id': random_gen.gen_integer(),
+                'id': random_gen.gen_string(12),
                 'languages': {'edges': [{'node': {'name': 'Shell'}}]},
                 'name': random_gen.gen_string(8),
                 'url': random_gen.gen_url()
@@ -56,6 +56,22 @@ def test_get_paginated_repos(mocker):
 def test_get_real_repos():
     repos = get_repos('diegoponciano')
     assert len(repos) > 100
+
+
+def test_get_language_empty():
+    repo = {'node': {
+        'languages': {'edges': []}}
+    }
+    lang = get_language(repo)
+    assert lang == ''
+
+
+def test_get_language():
+    repo = {'node': {
+        'languages': {'edges': [{'node': {'name': 'Javascript'}}]}}
+    }
+    lang = get_language(repo)
+    assert lang == 'Javascript'
 
 
 def test_github_client_requires_username():
