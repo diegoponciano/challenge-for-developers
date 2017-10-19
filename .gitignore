@@ -12,6 +12,7 @@ coverage
 __pycache__
 MANIFEST
 env
+.env
 dist/
 docs/_build/
 docs/locale/
