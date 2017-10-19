@@ -1,5 +1,9 @@
-from core.services import get_repos, GithubClient
+import pytest
 from model_mommy import random_gen
+
+import core
+from core.models import GithubRepo
+from core.services import get_repos, GithubClient
 
 
 def random_repos(number):
@@ -7,7 +11,7 @@ def random_repos(number):
     for _ in range(number):
         repos.append({
             'node': {
-                'id': random_gen.gen_string(12),
+                'id': random_gen.gen_integer(),
                 'languages': {'edges': [{'node': {'name': 'Shell'}}]},
                 'name': random_gen.gen_string(8),
                 'url': random_gen.gen_url()
@@ -54,10 +58,53 @@ def test_get_real_repos():
     assert len(repos) > 100
 
 
+def test_github_client_requires_username():
+    with pytest.raises(TypeError):
+        GithubClient()
+
+
 def test_github_client():
-    cli = GithubClient()
+    cli = GithubClient('diegoponciano')
     assert cli
 
 
-def test_sync():
-    pass
+def test_sync_call(mocker):
+    mocker.patch('core.services.get_repos', return_value=[])
+
+    cli = GithubClient('randomweirdo')
+    cli.sync_repos()
+    core.services.get_repos.assert_called_once_with('randomweirdo')
+
+
+@pytest.mark.django_db
+def test_sync_call_with_django_user(mocker, user):
+    mocker.patch('core.services.get_repos', return_value=[])
+
+    cli = GithubClient(user.username)
+    cli.sync_repos()
+    core.services.get_repos.assert_called_once_with('diegoponciano')
+
+
+@pytest.mark.django_db
+def test_sync_create_repo_instances(mocker, user):
+    GithubRepo.objects.all().delete()
+    repos = {
+        'edges': random_repos(10),
+        'cursor': random_gen.gen_string(12),
+        'pageInfo': {
+            'endCursor': random_gen.gen_string(12),
+            'hasNextPage': False
+        }
+    }
+    mocker.patch('core.services.query_repos', return_value=repos)
+
+    cli = GithubClient(user.username)
+    cli.sync_repos()
+
+    assert GithubRepo.objects.filter(user=user).count() == 10
+    assert GithubRepo.objects.filter(
+        repo_id=repos['edges'][0]['node']['id']).exists()
+    assert GithubRepo.objects.filter(
+        name=repos['edges'][0]['node']['name']).exists()
+    assert GithubRepo.objects.filter(
+        url=repos['edges'][0]['node']['url']).exists()

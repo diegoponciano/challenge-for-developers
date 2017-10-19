@@ -1,6 +1,9 @@
 import os
+from django.contrib.auth import get_user_model
 from gql import gql, Client
 from gql.transport.requests import RequestsHTTPTransport
+
+from .models import GithubRepo
 
 
 def query_repos(user, pagesize=100, cursor=None):
@@ -53,5 +56,26 @@ def get_repos(user):
     return repos
 
 
+def get_language(repo):
+    try:
+        return repo['node']['languages']['edges'][0]['node']['name']
+    except KeyError:
+        return None
+
+
 class GithubClient:
-    pass
+    def __init__(self, username):
+        self.username = username
+
+    def sync_repos(self):
+        repos = get_repos(self.username)
+        if repos:
+            user = get_user_model().objects.get(username=self.username)
+            for repo in repos:
+                GithubRepo.objects.create(
+                    user=user,
+                    repo_id=repo['node']['id'],
+                    name=repo['node']['name'],
+                    url=repo['node']['url'],
+                    language=get_language(repo)
+                )
