@@ -124,3 +124,26 @@ def test_sync_create_repo_instances(mocker, user):
         name=repos['edges'][0]['node']['name']).exists()
     assert GithubRepo.objects.filter(
         url=repos['edges'][0]['node']['url']).exists()
+
+
+@pytest.mark.django_db
+def test_sync_does_not_duplicate(mocker, user):
+    GithubRepo.objects.all().delete()
+    repos = {
+        'edges': random_repos(10),
+        'cursor': random_gen.gen_string(12),
+        'pageInfo': {
+            'endCursor': random_gen.gen_string(12),
+            'hasNextPage': False
+        }
+    }
+    mocker.patch('core.services.query_repos', return_value=repos)
+
+    cli = GithubClient(user.username)
+    cli.sync_repos()
+
+    assert GithubRepo.objects.filter(user=user).count() == 10
+
+    cli.sync_repos()
+
+    assert GithubRepo.objects.filter(user=user).count() == 10

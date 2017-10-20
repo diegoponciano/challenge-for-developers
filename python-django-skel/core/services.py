@@ -72,10 +72,13 @@ class GithubClient:
         if repos:
             user = get_user_model().objects.get(username=self.username)
             for repo in repos:
-                GithubRepo.objects.create(
+                repo_obj, _ = GithubRepo.objects.get_or_create(
                     user=user,
                     repo_id=repo['node']['id'],
                     name=repo['node']['name'],
                     url=repo['node']['url'],
-                    language=get_language(repo)
                 )
+                lang = get_language(repo)
+                if repo_obj.language != lang:
+                    repo_obj.language = lang
+                    repo_obj.save()
