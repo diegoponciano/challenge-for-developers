@@ -1,4 +1,5 @@
 import pytest
+from django.core.exceptions import ValidationError
 from django.db import IntegrityError
 from model_mommy import mommy, random_gen
 
@@ -45,3 +46,11 @@ def test_model_tags():
 
     assert len(gh_repo.tags) == 3
     assert 'javascript' in gh_repo.tags
+
+
+@pytest.mark.django_db
+def test_duplicate_tags_not_accepted():
+    gh_repo = mommy.make(GithubRepo)
+    gh_repo.tags = ['javascript', 'js', 'js']
+    with pytest.raises(ValidationError):
+        gh_repo.full_clean()
