@@ -23,6 +23,19 @@ def test_model_creation(user):
 
 
 @pytest.mark.django_db
+def test_model_str():
+    gh_repo = mommy.make(
+        GithubRepo,
+        url='http://github.com/gravity/zero')
+    assert str(gh_repo) == 'gravity/zero'
+
+    gh_repo = mommy.make(
+        GithubRepo,
+        url='https://github.com/gravity/zero')
+    assert str(gh_repo) == 'gravity/zero'
+
+
+@pytest.mark.django_db
 def test_model_tags():
     gh_repo = mommy.make(GithubRepo)
     gh_repo.tags = ['javascript', 'js', 'node']
