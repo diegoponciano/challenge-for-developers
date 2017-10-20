@@ -1,7 +1,8 @@
 import pytest
-from core.models import GithubRepo
 from django.db import IntegrityError
-from model_mommy import random_gen
+from model_mommy import mommy, random_gen
+
+from core.models import GithubRepo
 
 
 @pytest.mark.django_db
@@ -19,3 +20,15 @@ def test_model_creation(user):
     repo.save()
 
     assert repo.id
+
+
+@pytest.mark.django_db
+def test_model_tags():
+    gh_repo = mommy.make(GithubRepo)
+    gh_repo.tags = ['javascript', 'js', 'node']
+    gh_repo.save()
+
+    gh_repo = GithubRepo.objects.get(pk=gh_repo.pk)
+
+    assert len(gh_repo.tags) == 3
+    assert 'javascript' in gh_repo.tags

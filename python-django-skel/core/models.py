@@ -1,4 +1,5 @@
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
 from django.db import models
 
 
@@ -10,3 +11,4 @@ class GithubRepo(models.Model):
     name = models.CharField(max_length=250)
     url = models.URLField()
     language = models.CharField(max_length=100)
+    tags = ArrayField(models.CharField(max_length=100, blank=True), null=True)
