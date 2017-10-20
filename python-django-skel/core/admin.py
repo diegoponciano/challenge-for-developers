@@ -1,3 +1,10 @@
 from django.contrib import admin
 
-# Register your models here.
+from core.models import GithubRepo
+
+
+class GithubRepoAdmin(admin.ModelAdmin):
+    pass
+
+
+admin.site.register(GithubRepo, GithubRepoAdmin)
