@@ -1,5 +1,8 @@
 from django.conf import settings
+from django.contrib.postgres.fields import ArrayField
+from django.core.exceptions import ValidationError
 from django.db import models
+from urllib.parse import urlparse
 
 
 class GithubRepo(models.Model):
@@ -10,3 +13,12 @@ class GithubRepo(models.Model):
     name = models.CharField(max_length=250)
     url = models.URLField()
     language = models.CharField(max_length=100)
+    tags = ArrayField(models.CharField(max_length=100, blank=True), null=True)
+
+    def clean(self):
+        if len(self.tags) != len(set(self.tags)):
+            raise ValidationError('Não são permitidas tags duplicadas.')
+
+    def __str__(self):
+        parts = urlparse(self.url)
+        return parts.path[1:]
