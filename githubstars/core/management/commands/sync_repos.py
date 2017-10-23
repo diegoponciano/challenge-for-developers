@@ -14,7 +14,7 @@ class Command(BaseCommand):
         username = options['username']
         if not get_user_model().objects.filter(username=username).exists():
             raise CommandError(
-                'Usuário "%s" ainda não existe. Veja o comando createuser.'
+                'Usuário "%s" ainda não existe. Veja o comando createsuperuser.'
                 % username)
         cli = GithubClient(username)
         cli.sync_repos()

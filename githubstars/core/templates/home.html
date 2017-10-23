@@ -3,15 +3,75 @@
 
 {% block content %}
   <h1>{% trans "Search repositories by its tags" %}</h1>
-	<div class="jumbotron text-center">
-    <form action="/busca" method="GET">
+  <div class="jumbotron text-center">
+    <form id="busca" action="/busca" method="GET">
       <div class="col-md-12">
         <div class="input-group input-group-lg">
-          <input name="q" type="text" class="form-control" placeholder="{% trans 'e.g.: javascript' %}">
+          <input id="query" name="q" type="text" class="form-control" placeholder="{% trans 'e.g.: javascript' %}">
           <span class="input-group-addon">&#x1F50D;</span>
         </div>
       </div>
     </form>
     <br><br>
   </div>
+  <div id="results" style="display: none;">
+    <h2>{% trans "Search results for" %} '<span class="search_query"></span>':</h2>
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>{% trans "Name" %}</th>
+            <th>URL</th>
+            <th>{% trans "Language" %}</th>
+          </tr>
+        </thead>
+        <tbody>
+    	{% for result in results %}
+          <tr>
+            <th>{{ result.repo_id }}</th>
+            <th>{{ result.name }}</th>
+            <th>{{ result.url }}</th>
+            <th>{{ result.language }}</th>
+          </tr>
+    	{% endfor %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+{% endblock %}
+
+{% block extra_js %}
+<script type="text/javascript">
+    $(function() {
+        var doSearch = function(form) {
+            var results = $('#results');
+            results.find('tbody').html('');
+            var query = form.find('#query').val();
+            $('.search_query').text(query);
+            $.getJSON('/search?q=' + query, function(data) {
+                for (var i=0; i < data.results.length; i++) {
+                    var row = data.results[i];
+                    var td = '<td>' + row.repo_id + '</td>';
+                    td += '<td>' + row.name + '</td>';
+                    td += '<td>' + row.url + '</td>';
+                    td += '<td>' + row.language + '</td>';
+                    var tr = $('<tr>');
+                    tr.html(td);
+                    tr.appendTo(results.find('tbody'));
+                }
+                results.show();
+            });
+        };
+        $('#busca').submit(function() {
+            var form = $(this);
+            doSearch(form);
+            return false;
+        });
+        $('#busca .input-group-addon').on('click', function() {
+            var form = $('#busca');
+            doSearch(form);
+        });
+    });
+</script>
 {% endblock %}
