@@ -4,7 +4,7 @@ from core.models import GithubRepo
 
 
 class GithubRepoAdmin(admin.ModelAdmin):
-    pass
+    list_filter = ('user',)
 
 
 admin.site.register(GithubRepo, GithubRepoAdmin)
