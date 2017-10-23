@@ -5,6 +5,23 @@ from django.db import models
 from urllib.parse import urlparse
 
 
+class RepoManager(models.Manager):
+    def search_tag(self, tag):
+        return self.get_queryset().filter(tags__contains=[tag])
+
+    def search_tag_like(self, tag):
+        tag = '%%%s%%' % tag
+        query = '''
+        SELECT id
+        FROM (
+            SELECT id, unnest(tags) tag
+                FROM core_githubrepo) x
+                WHERE tag LIKE %s;
+        '''
+        return self.get_queryset().filter(
+            id__in=[res.id for res in self.get_queryset().raw(query, [tag])])
+
+
 class GithubRepo(models.Model):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, on_delete=models.CASCADE
@@ -14,6 +31,8 @@ class GithubRepo(models.Model):
     url = models.URLField()
     language = models.CharField(max_length=100)
     tags = ArrayField(models.CharField(max_length=100, blank=True), null=True)
+
+    objects = RepoManager()
 
     def clean(self):
         if len(self.tags) != len(set(self.tags)):
