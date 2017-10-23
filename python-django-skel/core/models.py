@@ -7,7 +7,8 @@ from urllib.parse import urlparse
 
 class RepoManager(models.Manager):
     def search_tag(self, tag):
-        return self.get_queryset().filter(tags__contains=[tag])
+        return self.get_queryset().filter(
+            tags__contains=[tag]).distinct('url')
 
     def search_tag_like(self, tag):
         tag = '%%%s%%' % tag
@@ -18,8 +19,9 @@ class RepoManager(models.Manager):
                 FROM core_githubrepo) x
                 WHERE tag LIKE %s;
         '''
+        ids = [res.id for res in self.get_queryset().raw(query, [tag])]
         return self.get_queryset().filter(
-            id__in=[res.id for res in self.get_queryset().raw(query, [tag])])
+            id__in=ids).distinct('url')
 
 
 class GithubRepo(models.Model):

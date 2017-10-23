@@ -31,3 +31,15 @@ def test_search_similar_tags():
     assert GithubRepo.objects.search_tag_like('ruby').count() == 0
     assert GithubRepo.objects.search_tag_like('java').count() == 6  # includes javascript
     assert GithubRepo.objects.search_tag_like('javascript').count() == 6
+
+
+@pytest.mark.django_db
+def test_search_ignore_duplicate_urls():
+    mommy.make(GithubRepo, url='https://github.com/asd/qwe', tags=['elixir'])
+    mommy.make(GithubRepo, url='https://github.com/asd/qwe', tags=['elixir', 'groovy'])
+    mommy.make(GithubRepo, url='https://github.com/asd/qwe', tags=['groovy'])
+
+    assert GithubRepo.objects.search_tag('elixir').count() == 1
+    assert GithubRepo.objects.search_tag('groovy').count() == 1
+    assert GithubRepo.objects.search_tag_like('elixir').count() == 1
+    assert GithubRepo.objects.search_tag_like('groovy').count() == 1
