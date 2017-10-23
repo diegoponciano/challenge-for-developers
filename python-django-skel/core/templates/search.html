@@ -1,0 +1,30 @@
+{% extends 'base.html' %}
+
+{% block content %}
+  <h1>Search repositories by its tags</h1>
+  <div class="jumbotron text-center">
+    <div class="table-responsive">
+      <table class="table table-striped">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Nome</th>
+            <th>URL</th>
+            <th>Linguagem</th>
+          </tr>
+        </thead>
+        <tbody>
+    	{% for result in results %}
+          <tr>
+            <th>{{ result.repo_id }}</th>
+            <th>{{ result.name }}</th>
+            <th>{{ result.url }}</th>
+            <th>{{ result.language }}</th>
+          </tr>
+    	{% endfor %}
+        </tbody>
+      </table>
+    </div>
+    <br><br>
+  </div>
+{% endblock %}

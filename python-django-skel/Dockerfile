@@ -1,6 +1,8 @@
 FROM python:3.6
 ENV PYTHONUNBUFFERED 1
 
+RUN apt update && apt install postgresql-client -y
+
 COPY ./requirements.txt /requirements.txt
 RUN pip install -r /requirements.txt
 
