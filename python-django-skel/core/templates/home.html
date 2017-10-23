@@ -3,10 +3,10 @@
 {% block content %}
   <h1>Search repositories by its tags</h1>
 	<div class="jumbotron text-center">
-    <form>
+    <form action="/busca" method="GET">
       <div class="col-md-12">
         <div class="input-group input-group-lg">
-          <input type="text" class="form-control" placeholder="e.g.: javascript">
+          <input name="q" type="text" class="form-control" placeholder="e.g.: javascript">
           <span class="input-group-addon">&#x1F50D;</span>
         </div>
       </div>
