@@ -1,16 +1,17 @@
 {% extends 'base.html' %}
+{% load i18n %}
 
 {% block content %}
-  <h1>Search repositories by its tags</h1>
+  <h1>{% trans "Search results for" %} '{{ request.GET.q }}':</h1>
   <div class="jumbotron text-center">
     <div class="table-responsive">
       <table class="table table-striped">
         <thead>
           <tr>
             <th>ID</th>
-            <th>Nome</th>
+            <th>{% trans "Name" %}</th>
             <th>URL</th>
-            <th>Linguagem</th>
+            <th>{% trans "Language" %}</th>
           </tr>
         </thead>
         <tbody>

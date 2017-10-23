@@ -1,0 +1,71 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: 1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2017-10-23 18:33-0200\n"
+"PO-Revision-Date: 2017-10-23 18:00-0200\n"
+"Last-Translator: Diego Ponciano <dgo.ponciano@gmail.com>\n"
+"Language-Team: pt-BR <LL@li.org>\n"
+"Language: pt-BR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+
+#: core/models.py:31
+msgid "user"
+msgstr "usuário"
+
+#: core/models.py:34
+msgid "repository ID"
+msgstr "ID do repositório"
+
+#: core/models.py:35
+msgid "name"
+msgstr "nome"
+
+#: core/models.py:36
+msgid "URL"
+msgstr ""
+
+#: core/models.py:37
+msgid "language"
+msgstr "linguagem"
+
+#: core/models.py:43
+msgid "repository"
+msgstr "repositório"
+
+#: core/models.py:44
+msgid "repositories"
+msgstr "repositórios"
+
+#: core/models.py:48
+msgid "Duplicate tags are not allowed."
+msgstr "Não são permitidas tags duplicadas."
+
+#: core/templates/home.html:5
+msgid "Search repositories by its tags"
+msgstr "Pesquise repositórios por suas tags"
+
+#: core/templates/home.html:10
+msgid "e.g.: javascript"
+msgstr "p.ex.: javascript"
+
+#: core/templates/search.html:5
+msgid "Search results for"
+msgstr "Resultados da busca por"
+
+#: core/templates/search.html:12
+msgid "Name"
+msgstr "Nome"
+
+#: core/templates/search.html:14
+msgid "Language"
+msgstr "Linguagem"
