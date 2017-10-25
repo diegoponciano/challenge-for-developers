@@ -1,6 +1,7 @@
 import sys
 from django.contrib.auth import get_user_model
 from django.core.management.base import BaseCommand, CommandError
+from django.contrib.auth.hashers import make_password
 from getpass import getpass
 
 
@@ -42,5 +43,8 @@ class Command(BaseCommand):
         u = User.objects.create_user(
             username=options['username'],
             email=options['email'],
-            password=options['password'])
+            password=make_password(options['password']),
+            is_staff=True, is_superuser=True)
         u.save()
+        self.stdout.write(self.style.SUCCESS(
+            'Usuário "%s" criado com sucesso.' % options['username']))
