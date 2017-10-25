@@ -1,0 +1,25 @@
+version: '2'
+
+services:
+  db:
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=ghstars
+
+  web:
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    command: python manage.py runserver 0.0.0.0:8000
+    depends_on:
+      - db
+    environment:
+      - DJANGO_SETTINGS_MODULE=githubstars.settings
+      - DATABASE_URL=postgres://ghstars@db:5432/ghstars
+      - POSTGRES_USER=ghstars
+    volumes:
+      - .:/app
+    ports:
+      - "8000:8000"
+    links:
+      - db
